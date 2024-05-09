@@ -45,6 +45,7 @@ class XiaoHongShuCrawler(AbstractCrawler):
             ip_proxy_pool = await create_ip_pool(config.IP_PROXY_POOL_COUNT, enable_validate_ip=True)
             ip_proxy_info: IpInfoModel = await ip_proxy_pool.get_proxy()
             playwright_proxy_format, httpx_proxy_format = self.format_proxy_info(ip_proxy_info)
+            # playwright_proxy_format, httpx_proxy_format = self.format_my_proxy_info()
 
         async with async_playwright() as playwright:
             # Launch a browser context.
@@ -72,7 +73,7 @@ class XiaoHongShuCrawler(AbstractCrawler):
             if not await self.xhs_client.pong():
                 login_obj = XiaoHongShuLogin(
                     login_type=self.login_type,
-                    login_phone="",  # input your phone number
+                    login_phone="18059240941",  # input your phone number
                     browser_context=self.browser_context,
                     context_page=self.context_page,
                     cookie_str=config.COOKIES
@@ -230,6 +231,20 @@ class XiaoHongShuCrawler(AbstractCrawler):
         }
         httpx_proxy = {
             f"{ip_proxy_info.protocol}": f"http://{ip_proxy_info.user}:{ip_proxy_info.password}@{ip_proxy_info.ip}:{ip_proxy_info.port}"
+        }
+        return playwright_proxy, httpx_proxy
+    
+    
+    @staticmethod
+    def format_my_proxy_info() -> Tuple[Optional[Dict], Optional[Dict]]:
+        """format my proxy info for playwright and httpx"""
+        playwright_proxy = {
+            "server": "http://127.0.0.1:7890",
+            "username": "",
+            "password": "",
+        }
+        httpx_proxy = {
+            "http://": "http://127.0.0.1:7890"
         }
         return playwright_proxy, httpx_proxy
 

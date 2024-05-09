@@ -86,6 +86,8 @@ class XiaoHongShuClient(AbstractApiClient):
                 **kwargs
             )
 
+            print(f"[Crawler] received response: {response}, code: {response.status_code}, content: {response.content}")
+
         if return_response:
             return response.text
 
@@ -126,6 +128,7 @@ class XiaoHongShuClient(AbstractApiClient):
         """
         headers = await self._pre_headers(uri, data)
         json_str = json.dumps(data, separators=(',', ':'), ensure_ascii=False)
+        print(f"url: {self._host} | {uri}\ndata: {json_str}\nheaders:{headers}")
         return await self.request(method="POST", url=f"{self._host}{uri}",
                                   data=json_str, headers=headers)
 
